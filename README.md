@@ -81,7 +81,7 @@ abandoned-city-roguelike/
 ├── constants.py        # Game constants and configuration
 ├── requirements.txt    # Dependencies
 ├── README.md           # This file
-└── ft88_gothique.ttf   # Game font
+└── fonts               # Game font
 ```
 
 ## Development
