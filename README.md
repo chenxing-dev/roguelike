@@ -1,8 +1,8 @@
-# Abandoned City Roguelike
+# Abandoned Town Roguelike: Urban Decay
 
 ![Game Screenshot](screenshot.png)
 
-A minimalistic text-based roguelike game set in a procedurally generated abandoned city. Descend through 6 levels of decaying urban infrastructure, battling enemies and collecting gear to survive the depths of the forgotten city.
+A minimalistic text-based roguelike game set in a procedurally generated abandoned town. Descend through 6 levels of decaying urban infrastructure, battling enemies and collecting gear to survive the depths of the forgotten town.
 
 ## Features
 
@@ -13,7 +13,6 @@ A minimalistic text-based roguelike game set in a procedurally generated abandon
 - Equipment system with weapons and armor
 - Fog of war and exploration mechanics
 - Permadeath system
-- Clean UI with health bars and status information
 
 ## Installation
 
@@ -26,8 +25,8 @@ A minimalistic text-based roguelike game set in a procedurally generated abandon
 ### Setup
 1. Clone the repository:
 ```bash
-git clone https://github.com/chenxing-dev/abandoned-city-roguelike.git
-cd abandoned-city-roguelike
+git clone https://github.com/chenxing-dev/abandoned-town-roguelike.git
+cd abandoned-town-roguelike
 ```
 
 2. Install dependencies:
@@ -60,28 +59,28 @@ python main.py
 ### Entities
 - **Player**: `@` - You!
 - **Stairs**: `>` - Descend to next level
-- **Radroach**: `R` - Weak but numerous
+- **Rats**: `R` - Weak but numerous
 - **Scavenger**: `S` - Medium strength
-- **Ghoul**: `G` - Strong melee fighter
+- **Corrupted Officials**: `G` - Tough enemies with some armor, found in later levels
 
 ### Items
-- **First-Aid Kits**: `!` - Restore HP
-- **Caps**: `$` - Score points
-- **Weapons**: `)` - Increase damage
+- **Heals**: `!` - Restore HP
+- **Caps**: `$` - Currency and score points
+- **Weapons**: `/` - Increase damage
 - **Armor**: `[` - Increase AC
 
 ## Project Structure
 
 ```plaintext
-abandoned-city-roguelike/
+abandoned-town-roguelike/
 ├── main.py             # Game entry point
-├── engine.py           # Main game loop and rendering
-├── entities.py         # Entity classes (Player, Monster, Item)
-├── dungeon_gen.py      # Procedural level generation
-├── constants.py        # Game constants and configuration
+├── engine.py           # Game rendering
+├── entities.py         # Player and entity classes
+├── dungeon_gen.py      # Map generation
+├── constants.py        # Game constants
 ├── requirements.txt    # Dependencies
 ├── README.md           # This file
-└── fonts               # Game font
+└── fonts               # Game fonts
 ```
 
 ## Development
@@ -93,7 +92,6 @@ The entry point of the application. Initializes and runs the game.
 
 #### `engine.py`
 Contains the `Game` class which handles:
-- Main game loop
 - Input processing
 - Rendering and UI
 - Game state management
