@@ -81,7 +81,7 @@ class Engine:
         self.render_map(game_map, player)
         
         # Draw UI panel
-        self.render_ui_panel()
+        self.render_ui_panel(player)
         
         # Draw message log
         self.render_messages()
@@ -128,7 +128,7 @@ class Engine:
         self.container.blit(player_text, (player.x * self.char_width, player.y * self.char_height))
     
     
-    def render_ui_panel(self):
+    def render_ui_panel(self, player):
         """Render UI Panel"""
         ui_x, ui_y = MAP_WIDTH * self.char_width, 0
         
@@ -137,9 +137,9 @@ class Engine:
         ui_bg.fill(UI_BG_COLOR)
         self.container.blit(ui_bg, (ui_x, ui_y))
         
-        # Draw UI text
-        ui_text = self.font_ui.render("Player Stats", True, WHITE)
-        self.container.blit(ui_text, (ui_x, 0))
+        # Draw level indicator
+        level_text = self.font_ui.render(f"Level: {player.current_floor}", True, WHITE)
+        self.container.blit(level_text, (ui_x, 0))
     
     
     def render_messages(self):
@@ -178,8 +178,11 @@ class Engine:
                     result = player.move(1, 0, game_map)
                 elif event.key == pygame.K_ESCAPE:
                     return False
+                elif event.key == pygame.K_i:
+                    self.show_inventory(player)
                 
-                if result:
+                # Only add message if result is a string
+                if result and isinstance(result, str):
                     self.add_message(result)
                     
                 # Remove dead entities
@@ -187,10 +190,23 @@ class Engine:
                 
                 # Handle stairs
                 if result and "Descending" in result:
-                    # Placeholder for level transition
-                    self.add_message("Level complete! Descending...")
-                    # Reset level would go here
+                    # Generate next level
+                    game_map.level = player.current_floor
+                    game_map.generate_map()
                 
                 return True
         
         return True
+    
+    def show_inventory(self, player):
+        """Display inventory and allow item usage"""
+        if not player.inventory:
+            self.add_message("Your inventory is empty.")
+            return
+            
+        self.add_message("Inventory:")
+        for i, item in enumerate(player.inventory):
+            self.add_message(item.name)
+            
+        # For now, just show the items
+        # Later, let the player select one to use

@@ -1,21 +1,64 @@
 import random
 import numpy as np
-from constants import WALL, FLOOR, PLAYER
-from entities import Scavenger, Looter, Thug, CorruptCop, FirstAid, Caps, Weapon, Stairs
+from constants import *
+from entity_registry import ENTITY_REGISTRY, create_entity
+
+
+# Sample map
+templates = {
+        1: [
+            "###############",
+            "#...........$.#",
+            "#.L..........S#",
+            "#.............#",
+            "#.............#",
+            "#.............#",
+            "#.....!.......#",
+            "#.......@.....#",
+            "#............>#",
+            "#.............#",
+            "#.............#",
+            "#.............#",
+            "#.$...........#",
+            "#.............#",
+            "###############"
+        ],
+        2: [
+            "###############",
+            "#.L.T.........#",
+            "#.............#",
+            "#.............#",
+            "#.............#",
+            "#.....C.......#",
+            "#.....!.......#",
+            "#.......@.....#",
+            "#.....>.......#",
+            "#.............#",
+            "#.S...........#",
+            "#.............#",
+            "#.$...........#",
+            "#.............#",
+            "###############"
+        ]}
 
 class GameMap:
-    def __init__(self, width=0, height=0):
-        self.width = width
-        self.height = height
-        self.tiles = np.full((width, height), fill_value=FLOOR, dtype=str)
+    def __init__(self, level=1):
+        self.width = 15
+        self.height = 15
+        self.tiles = np.full((self.width, self.height), fill_value=FLOOR, dtype=str)
         self.player_start = (3, 3)  # default
-        self.entities = []
+        self.level = level
+        self.entities = []  # Store entities here
     
-    def load_from_string_array(self, string_array):
+    def generate_map(self):
         """Load map from a list of strings"""
+        string_array = templates.get(self.level, templates[1])
         self.height = len(string_array)
         self.width = len(string_array[0])
         self.tiles = np.full((self.width, self.height), fill_value=FLOOR, dtype='str')
+        
+        self.entities = []  # Reset entities
+        self.player_start = (3, 3)  # default
         
         # Convert text map to grid
         for y, row in enumerate(string_array):
@@ -31,28 +74,10 @@ class GameMap:
                     if char == PLAYER:
                         # This is the player starting position
                         self.player_start = (x, y)
-                    elif char == 'S':
-                        self.entities.append(Scavenger(x, y))
-                    elif char == 'L':  # Looter
-                        self.entities.append(Looter(x, y))
-                    elif char == 'T':  # Thug
-                        self.entities.append(Thug(x, y))
-                    elif char == 'C':  # Corrupt Cop
-                        self.entities.append(CorruptCop(x, y))
-                    elif char == '!':
-                        self.entities.append(FirstAid(x, y))
-                    elif char == '$':
-                        self.entities.append(Caps(x, y, random.randint(1, 5)))
-                    elif char == ')':
-                        weapons = [
-                            ("Pipe Wrench", 1),
-                            ("Baseball Bat", 2),
-                            ("Fire Axe", 3)
-                        ]
-                        name, boost = random.choice(weapons)
-                        self.entities.append(Weapon(x, y, name, boost))
-                    elif char == '>':
-                        self.entities.append(Stairs(x, y))
+                    elif char in ENTITY_REGISTRY:
+                        entity = create_entity(char, x, y)
+                        if entity:
+                            self.entities.append(entity)
 
         
     def is_blocked(self, x, y):

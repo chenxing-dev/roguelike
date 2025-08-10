@@ -9,27 +9,8 @@ def main():
     engine = Engine()
     
     # Create game map
-    game_map = GameMap(MAP_WIDTH, MAP_HEIGHT)
-    
-    # Sample map
-    map_data = [
-        "###############",
-        "#....C........#",
-        "#.............#",
-        "#.............#",
-        "#........S....#",
-        "#....$........#",
-        "#......@......#",
-        "#..!..........#",
-        "#.............#",
-        "#.........>...#",
-        "#.............#",
-        "#...L.......T.#",
-        "#.............#",
-        "#.............#",
-        "###############"
-    ]
-    game_map.load_from_string_array(map_data)
+    game_map = GameMap(level=1)    
+    game_map.generate_map()
     
     # Create player at the starting position found in the map
     player = Player(*game_map.player_start)
