@@ -20,13 +20,17 @@ class Actor(Entity):
 
     def take_damage(self, amount):
         # Apply armor reduction
-        actual_damage = max(1, amount - self.armor)
+        actual_damage = max(0, amount - self.armor)
         
         self.hp -= actual_damage
         if self.hp <= 0:
             self.alive = False
             return f"{self.name} dies!"
         return f"{self.name} takes {actual_damage} damage!"
+    
+    def attack(self, target):
+        result = target.take_damage(self.damage)
+        return f"{self.name} attacks you. {result}"
 
 class Player(Actor):
     def __init__(self, x, y):
@@ -64,16 +68,27 @@ class Player(Actor):
                 return self.pick_up(target, game_map.entities)
         else:
             self.x, self.y = new_x, new_y
-            return None
+            return True
     
     def attack(self, target):
-        # Calculate damage with equipped weapon
         damage = self.damage
+        
+        # Calculate damage with equipped weapon
         if self.equipped_weapon:
             damage += self.equipped_weapon.damage_boost
             
-        result = target.take_damage(self.damage)
-        return result
+        result = target.take_damage(damage)
+        return f"You attack {target.name}! {result}"
+    
+    def take_damage(self, amount):
+        # Apply armor reduction
+        actual_damage = max(0, amount - self.armor)
+        
+        self.hp -= actual_damage
+        if self.hp <= 0:
+            self.alive = False
+            return ""
+        return f"You take {actual_damage} damage!"
     
     def pick_up(self, item, entities):
         if isinstance(item, Caps):

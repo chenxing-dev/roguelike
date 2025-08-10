@@ -29,6 +29,8 @@ class Engine:
         # Initialize empty game messages
         self.messages = []
         
+        self.game_state = "playing"  # "playing", "dead", "victory"
+        
     def add_message(self, message):
         """Add a message to the log with automatic wrapping"""
         # Split long messages into chunks that fit in the message area
@@ -107,26 +109,45 @@ class Engine:
                 self.container.blit(text_surface, (x * self.char_width, y * self.char_height))
         
         # Draw entities
+        
+        # Create a set of positions occupied by blocking entities
+        blocking_positions = set()
         for entity in game_map.entities:
-            if isinstance(entity, Actor):
+            if entity.blocks and entity != player and entity.alive:
+                blocking_positions.add((entity.x, entity.y))
+                
+        # Draw non-blocking entities only if not covered by blocking entities
+        for entity in game_map.entities:
+            if not entity.blocks and entity != player:
+                if (entity.x, entity.y) not in blocking_positions:
+                    text = self.font_map.render(entity.char, True, entity.color)
+                    self.container.blit(text, 
+                                      (entity.x * self.char_width, 
+                                       entity.y * self.char_height))
+                
+        # Second: Draw blocking entities (enemies)
+        for entity in game_map.entities:
+            if entity.blocks and entity != player and entity.alive:
+                
+                # Draw health indicator for enemies
                 color = entity.color
                 # Health indicator
                 if entity.hp / entity.max_hp < 0.3:
                     color = (255, 50, 50)  # Red when critical
                 elif entity.hp / entity.max_hp < 0.6:
                     color = (255, 200, 50)  # Yellow when wounded
-            else:
-                color = entity.color
-                
-            text = self.font_map.render(entity.char, True, color)
-            self.container.blit(text, 
-                              (entity.x * self.char_width, 
-                               entity.y * self.char_height))
+                    
+                text = self.font_map.render(entity.char, True, color)
+                self.container.blit(text, 
+                                  (entity.x * self.char_width, 
+                                   entity.y * self.char_height))
         
-        # Draw player
-        player_text = self.font_map.render(player.char, True, player.color)
-        self.container.blit(player_text, (player.x * self.char_width, player.y * self.char_height))
-    
+        # Third: Draw player (always on top)
+        if player.alive:
+            player_text = self.font_map.render(PLAYER, True, PLAYER_COLOR)
+            self.container.blit(player_text, 
+                              (player.x * self.char_width, 
+                               player.y * self.char_height))
     
     def render_ui_panel(self, player):
         """Render UI Panel"""
@@ -165,6 +186,15 @@ class Engine:
                 return False
             
             if event.type == pygame.KEYDOWN:
+                # Always allow quitting
+                if event.key == pygame.K_ESCAPE:
+                    return False
+                
+                # Ignore other input if player is dead
+                if not player.alive:
+                    return True
+                
+                turn_passed = False
                 result = ""
                 
                 # Movement controls
@@ -176,20 +206,31 @@ class Engine:
                     result = player.move(-1, 0, game_map)
                 elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     result = player.move(1, 0, game_map)
-                elif event.key == pygame.K_ESCAPE:
-                    return False
                 elif event.key == pygame.K_i:
+                    # Opening inventory does not pass a turn
                     self.show_inventory(player)
                 
-                # Only add message if result is a string
-                if result and isinstance(result, str):
-                    self.add_message(result)
-                    
+                if result is not None:  # Either moved or interacted
+                    turn_passed = True
+                    # Only add message if result is a string
+                    if isinstance(result, str):
+                        self.add_message(result)
+                
+                if turn_passed and player.alive:
+                    game_map.compute_fov(player.x, player.y)
+                    # Process enemy turns after player moves
+                    self.handle_enemy_turns(player, game_map)
+                
                 # Remove dead entities
                 game_map.entities[:] = [e for e in game_map.entities if getattr(e, 'alive', True)]
                 
+                # Check if player died
+                if not player.alive:
+                    self.add_message("YOU HAVE DIED")
+                    self.add_message("Game Over! Press ESC to quit.")
+                
                 # Handle stairs
-                if result and "Descending" in result:
+                if result and isinstance(result, str) and "Descending" in result:
                     # Generate next level
                     game_map.level = player.current_floor
                     game_map.generate_map()
@@ -210,3 +251,78 @@ class Engine:
             
         # For now, just show the items
         # Later, let the player select one to use
+        
+    def handle_enemy_turns(self, player, game_map):
+        """Process enemy turns after player moves"""
+        messages = []
+        
+        for entity in game_map.entities[:]:  # Use slice copy to avoid modification issues
+            if isinstance(entity, Actor) and entity is not player and entity.alive:
+                # Check if player is adjacent
+                adjacent = False
+                for dx, dy in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
+                    if (player.x == entity.x + dx and 
+                        player.y == entity.y + dy):
+                        adjacent = True
+                        break
+                
+                if adjacent:
+                    # Attack player
+                    result = entity.attack(player)
+                    messages.append(result)
+                    
+                    # Check if player died
+                    if not player.alive:
+                        self.game_state = "dead"
+                else:
+                    # Move toward player
+                    new_x, new_y = game_map.find_path(
+                        entity.x, entity.y, 
+                        player.x, player.y,
+                        game_map.entities
+                    )
+                    
+                    # Only move if not blocked
+                    if not game_map.is_blocked(new_x, new_y):
+                        # Check if position is occupied
+                        occupied = False
+                        for other in game_map.entities:
+                            if other is not entity and other.x == new_x and other.y == new_y and other.blocks:
+                                occupied = True
+                                break
+                        
+                        if not occupied:
+                            entity.x, entity.y = new_x, new_y
+        
+        # Add messages to log
+        for msg in messages:
+            self.add_message(msg)
+                        
+    def move_toward(self, entity, target_x, target_y, game_map):
+        # Directions: 4-way
+        directions = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+        # We'll try to minimize the distance to target
+        best_dist = float('inf')
+        best_move = (entity.x, entity.y)
+        for dx, dy in directions:
+            nx, ny = entity.x + dx, entity.y + dy
+            if not (0 <= nx < game_map.width and 0 <= ny < game_map.height):
+                continue
+            if game_map.is_blocked(nx, ny):
+                continue
+            # Check if there's an actor in that position
+            occupied = False
+            for e in game_map.entities:
+                if e.blocks and e.x == nx and e.y == ny and e.alive:
+                    occupied = True
+                    break
+            if occupied:
+                continue
+                
+            dist = (nx - target_x)**2 + (ny - target_y)**2
+            if dist < best_dist:
+                best_dist = dist
+                best_move = (nx, ny)
+                
+        # Move the entity
+        entity.x, entity.y = best_move

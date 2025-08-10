@@ -2,7 +2,7 @@
 
 ## Core Features
 - [ ] Procedural dungeon generation for 6 levels
-- [ ] Stairs implementation and level progression
+- [x] Stairs implementation and level progression
 - [ ] Combat system with stat calculations (HP/AC/DM)
 - [ ] Enemy AI and behaviors
 - [ ] XP system and level progression
@@ -113,7 +113,7 @@
 
 ## Phase 2 Goals
 - [ ] Implement procedural level generation
-- [ ] Create entity system with base classes
-- [ ] Add first enemy type (Rat)
-- [ ] Implement basic combat mechanics
-- [ ] Create stairs for level progression
+- [x] Create entity system with base classes
+- [x] Add first enemy type (Scavenger)
+- [x] Implement basic combat mechanics
+- [x] Create stairs for level progression
