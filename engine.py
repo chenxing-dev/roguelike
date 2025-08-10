@@ -1,5 +1,6 @@
 import pygame
 from constants import *
+from entities import Actor
 
 class Engine:
     def __init__(self):
@@ -105,6 +106,23 @@ class Engine:
                 text_surface = self.font_map.render(char, True, color)
                 self.container.blit(text_surface, (x * self.char_width, y * self.char_height))
         
+        # Draw entities
+        for entity in game_map.entities:
+            if isinstance(entity, Actor):
+                color = entity.color
+                # Health indicator
+                if entity.hp / entity.max_hp < 0.3:
+                    color = (255, 50, 50)  # Red when critical
+                elif entity.hp / entity.max_hp < 0.6:
+                    color = (255, 200, 50)  # Yellow when wounded
+            else:
+                color = entity.color
+                
+            text = self.font_map.render(entity.char, True, color)
+            self.container.blit(text, 
+                              (entity.x * self.char_width, 
+                               entity.y * self.char_height))
+        
         # Draw player
         player_text = self.font_map.render(player.char, True, player.color)
         self.container.blit(player_text, (player.x * self.char_width, player.y * self.char_height))
@@ -147,21 +165,32 @@ class Engine:
                 return False
             
             if event.type == pygame.KEYDOWN:
-                moved = False
+                result = ""
                 
                 # Movement controls
                 if event.key == pygame.K_UP or event.key == pygame.K_w:
-                    moved = player.move(0, -1, game_map)
+                    result = player.move(0, -1, game_map)
                 elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
-                    moved = player.move(0, 1, game_map)
+                    result = player.move(0, 1, game_map)
                 elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
-                    moved = player.move(-1, 0, game_map)
+                    result = player.move(-1, 0, game_map)
                 elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
-                    moved = player.move(1, 0, game_map)
+                    result = player.move(1, 0, game_map)
                 elif event.key == pygame.K_ESCAPE:
                     return False
                 
-                if moved:
-                    self.add_message(f"Moved to ({player.x}, {player.y})")
+                if result:
+                    self.add_message(result)
+                    
+                # Remove dead entities
+                game_map.entities[:] = [e for e in game_map.entities if getattr(e, 'alive', True)]
+                
+                # Handle stairs
+                if result and "Descending" in result:
+                    # Placeholder for level transition
+                    self.add_message("Level complete! Descending...")
+                    # Reset level would go here
+                
+                return True
         
         return True
