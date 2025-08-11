@@ -1,6 +1,6 @@
 # Game title and description
-GAME_TITLE = "Urban Decay"
-GAME_DESCRIPTION = "The town lies in ruins after the economic collapse. Descend through 6 levels to find the truth."
+GAME_TITLE = "Forgotten Temple: Gothique"
+GAME_DESCRIPTION = ""
 
 # Screen dimensions
 SCREEN_WIDTH, SCREEN_HEIGHT = 720, 720

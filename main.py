@@ -16,9 +16,13 @@ def main():
     player = Player(*game_map.player_start)
     
     # Add starting messages
-    engine.add_message(f"Welcome to {GAME_TITLE}!")
-    engine.add_message(GAME_DESCRIPTION)
-    engine.add_message("Find the stairs (>) to descend deeper.")
+    engine.add_message(GAME_TITLE)
+    engine.add_message("")
+    engine.add_message("Temple defiled.")
+    engine.add_message("£halice stolen.")
+    engine.add_message("Sister Evangeline:")
+    engine.add_message("Descend into darkness.")
+    engine.add_message("Reclaim the light.")
     
     # Main game loop
     running = True
