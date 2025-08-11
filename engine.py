@@ -11,7 +11,7 @@ class Engine:
         
         # Create fonts
         try:
-            self.font_ui = pygame.font.Font("fonts/FT88-Regular.ttf", FONT_SIZE)
+            self.font_ui = pygame.font.Font("fonts/FT88-Serif.ttf", FONT_SIZE)
             self.font_map = pygame.font.Font("fonts/FT88-Gothique.ttf", FONT_SIZE)
         except:
             self.font_ui = pygame.font.SysFont("monospace", FONT_SIZE)
