@@ -1,5 +1,6 @@
 from constants import PLAYER, PLAYER_COLOR
 
+
 class Entity:
     def __init__(self, x, y, char, color, name, blocks=False):
         self.x = x
@@ -8,6 +9,7 @@ class Entity:
         self.color = color
         self.name = name
         self.blocks = blocks
+
 
 class Actor(Entity):
     def __init__(self, x, y, char, color, name, hp, damage):
@@ -21,16 +23,17 @@ class Actor(Entity):
     def take_damage(self, amount):
         # Apply armor reduction
         actual_damage = max(0, amount - self.armor)
-        
+
         self.hp -= actual_damage
         if self.hp <= 0:
             self.alive = False
             return f"{self.name} dies!"
         return f"{self.name} takes {actual_damage} damage!"
-    
+
     def attack(self, target):
         result = target.take_damage(self.damage)
         return f"{self.name} attacks you. {result}"
+
 
 class Player(Actor):
     def __init__(self, x, y):
@@ -41,25 +44,25 @@ class Player(Actor):
         self.xp = 0
         self.current_floor = 1
         self.equipped_weapon = None
-    
+
     def move(self, dx, dy, game_map):
         """Move the player if the target position is not blocked"""
         new_x, new_y = self.x + dx, self.y + dy
-        
+
         # Check for wall collision
         if game_map.is_blocked(new_x, new_y):
             return None
-        
+
         # Check for entity interaction at new position
         target = None
         for entity in game_map.entities:
             if entity.x == new_x and entity.y == new_y:
                 target = entity
                 break
-            
+
         if target:
             if isinstance(target, Stairs):  # Check stairs first!
-                return self.use_stairs(target, game_map)
+                return self.use_stairs()
             elif isinstance(target, Actor):
                 return self.attack(target)
             elif isinstance(target, Item):
@@ -69,27 +72,27 @@ class Player(Actor):
         else:
             self.x, self.y = new_x, new_y
             return True
-    
+
     def attack(self, target):
         damage = self.damage
-        
+
         # Calculate damage with equipped weapon
         if self.equipped_weapon:
             damage += self.equipped_weapon.damage_boost
-            
+
         result = target.take_damage(damage)
         return f"You attack {target.name}! {result}"
-    
+
     def take_damage(self, amount):
         # Apply armor reduction
         actual_damage = max(0, amount - self.armor)
-        
+
         self.hp -= actual_damage
         if self.hp <= 0:
             self.alive = False
             return ""
         return f"You take {actual_damage} damage!"
-    
+
     def pick_up(self, item, entities):
         if isinstance(item, Caps):
             self.caps += item.value
@@ -99,11 +102,11 @@ class Player(Actor):
             self.inventory.append(item)
             entities.remove(item)
             return f"Picked up {item.name}"
-    
-    def use_stairs(self, stairs, game_map):
+
+    def use_stairs(self):
         self.current_floor += 1
         return f"Level {self.current_floor-1} complete! Descending to level {self.current_floor}..."
-    
+
     def use_item(self, item):
         if isinstance(item, FirstAid):
             self.hp = min(self.max_hp, self.hp + item.value)
@@ -112,18 +115,19 @@ class Player(Actor):
             self.equipped_weapon = item
             return f"Equipped {item.name} (+{item.damage_boost} DMG)"
         return None
-    
+
+
 class Scavenger(Actor):
-    def __init__(self, x, y, symbol, color, name, hp, damage):
-        super().__init__(x, y, symbol, color, name, hp, damage)
+    pass
+
 
 class Looter(Actor):
-    def __init__(self, x, y, symbol, color, name, hp, damage):
-        super().__init__(x, y, symbol, color, name, hp, damage)
+    pass
+
 
 class Thug(Actor):
-    def __init__(self, x, y, symbol, color, name, hp, damage):
-        super().__init__(x, y, symbol, color, name, hp, damage)
+    pass
+
 
 class CorruptCop(Actor):
     def __init__(self, x, y, symbol, color, name, hp, damage):
@@ -133,26 +137,31 @@ class CorruptCop(Actor):
 
 class Stairs(Entity):
     def __init__(self, x, y, symbol, color, name):
-        super().__init__(x, y, symbol, color, name, blocks=False)        
+        super().__init__(x, y, symbol, color, name, blocks=False)
+
 
 class Item(Entity):
     def __init__(self, x, y, char, color, name, value=0):
         super().__init__(x, y, char, color, name, blocks=False)
         self.value = value
 
+
 class Caps(Item):
     def __init__(self, x, y, value=1):
-        super().__init__(x, y, '$', (200, 180, 50), "Bottle Caps", value)
+        super().__init__(x, y, "$", (200, 180, 50), "Bottle Caps", value)
+
     def get_name(self):
         if self.value == 1:
             return "1 Bottle Cap"
         return f"{self.value} Bottle Caps"
-    
+
+
 class FirstAid(Item):
     def __init__(self, x, y, symbol, color, name, value):
         super().__init__(x, y, symbol, color, name, value)
 
+
 class Weapon(Item):
     def __init__(self, x, y, name, damage_boost):
-        super().__init__(x, y, ')', (180, 180, 220), name, damage_boost)
+        super().__init__(x, y, ")", (180, 180, 220), name, damage_boost)
         self.damage_boost = damage_boost
