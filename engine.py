@@ -1,3 +1,4 @@
+import math
 import pygame
 from constants import (
     GAME_TITLE,
@@ -312,43 +313,42 @@ class Engine:
             :
         ]:  # Use slice copy to avoid modification issues
             if isinstance(entity, Actor) and entity is not player and entity.alive:
-                # Check if player is adjacent
-                adjacent = False
-                for dx, dy in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
-                    if player.x == entity.x + dx and player.y == entity.y + dy:
-                        adjacent = True
-                        break
+                # Calculate distance to player
+                distance = math.sqrt(
+                    (entity.x - player.x) ** 2 + (entity.y - player.y) ** 2
+                )
 
-                if adjacent:
-                    # Attack player
-                    result = entity.attack(player)
-                    messages.append(result)
+                if distance <= 8:  # Detection range
+                    if distance <= 1:  # Check if player is adjacent
+                        # Attack player
+                        result = entity.attack(player)
+                        messages.append(result)
 
-                    # Check if player died
-                    if not player.alive:
-                        self.game_state = "dead"
-                else:
-                    # Move toward player
-                    new_x, new_y = game_map.find_path(
-                        entity.x, entity.y, player.x, player.y, game_map.entities
-                    )
+                        # Check if player died
+                        if not player.alive:
+                            self.game_state = "dead"
+                    else:
+                        # Move toward player using pathfinding
+                        new_x, new_y = game_map.find_path(
+                            entity.x, entity.y, player.x, player.y, game_map.entities
+                        )
 
-                    # Only move if not blocked
-                    if not game_map.is_blocked(new_x, new_y):
-                        # Check if position is occupied
-                        occupied = False
-                        for other in game_map.entities:
-                            if (
-                                other is not entity
-                                and other.x == new_x
-                                and other.y == new_y
-                                and other.blocks
-                            ):
-                                occupied = True
-                                break
+                        # Only move if not blocked
+                        if not game_map.is_blocked(new_x, new_y):
+                            # Check if position is occupied
+                            occupied = False
+                            for other in game_map.entities:
+                                if (
+                                    other.blocks
+                                    and other != entity
+                                    and other.x == new_x
+                                    and other.y == new_y
+                                ):
+                                    occupied = True
+                                    break
 
-                        if not occupied:
-                            entity.x, entity.y = new_x, new_y
+                            if not occupied:
+                                entity.x, entity.y = new_x, new_y
 
         # Add messages to log
         for msg in messages:

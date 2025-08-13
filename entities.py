@@ -31,8 +31,22 @@ class Actor(Entity):
         return f"{self.name} takes {actual_damage} damage!"
 
     def attack(self, target):
-        result = target.take_damage(self.damage)
-        return f"{self.name} attacks you. {result}"
+        """Attack another actor and return result message"""
+        damage = self.damage
+        result = target.take_damage(damage)
+        return f"{self.name} {self.get_attack_verb()} you! {result}"
+
+    def get_attack_verb(self):
+        """Get appropriate attack verb for this entity type"""
+        if isinstance(self, Scavenger):
+            return "swings at"
+        elif isinstance(self, Looter):
+            return "stabs"
+        elif isinstance(self, Thug):
+            return "slams"
+        elif isinstance(self, CorruptCop):
+            return "shoots"
+        return "attacks"
 
 
 class Player(Actor):
