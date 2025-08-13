@@ -255,6 +255,9 @@ class Engine:
                 elif event.key == pygame.K_i:
                     # Opening inventory does not pass a turn
                     self.show_inventory(player)
+                    return True
+                else:
+                    return True
 
                 if result is not None:  # Either moved or interacted
                     turn_passed = True
@@ -282,6 +285,7 @@ class Engine:
                     # Generate next level
                     game_map.level = player.current_floor
                     game_map.generate_map()
+                    player.x, player.y = game_map.player_start
 
                 return True
 
