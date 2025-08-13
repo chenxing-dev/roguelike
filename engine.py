@@ -179,19 +179,33 @@ class Engine:
             )
 
     def render_ui_panel(self, player):
-        """Render UI Panel"""
-        ui_x, ui_y = MAP_WIDTH * self.char_width, 0
-
+        """Render the UI panel with player stats"""
         # Draw UI panel background
+        ui_x, ui_y = MAP_WIDTH * self.char_width, 0
         ui_bg = pygame.Surface(
             (UI_WIDTH * self.char_width, UI_HEIGHT * self.char_height), pygame.SRCALPHA
         )
         ui_bg.fill(BLACK)
         self.container.blit(ui_bg, (ui_x, ui_y))
 
-        # Draw level indicator
-        level_text = self.font_ui.render(f"Level: {player.current_floor}", True, WHITE)
-        self.container.blit(level_text, (ui_x, 0))
+        # Player stats
+        stats_y = 0
+        stats = [
+            f"Level {player.level}",
+            f"Floor {player.current_floor}",
+            "",
+            f"XP {player.xp}",
+            f"$$ {player.caps}",
+            f"HP {player.hp}/{player.max_hp}",
+            "",
+            f"Damage {player.damage}",
+        ]
+
+        # Draw stats with UI font
+        for stat in stats:
+            text = self.font_ui.render(stat, True, WHITE)
+            self.container.blit(text, (ui_x + self.char_width, stats_y))
+            stats_y += self.char_height
 
     def render_messages(self):
         """Render messages"""
