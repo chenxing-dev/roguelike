@@ -7,10 +7,9 @@ from constants import (
     FONT_SIZE,
     WALL,
     FLOOR,
-    WALL_COLOR,
-    FLOOR_COLOR,
+    LIGHT_GRAY,
+    DARK_GRAY,
     PLAYER,
-    PLAYER_COLOR,
     GRID_WIDTH,
     GRID_HEIGHT,
     MAP_WIDTH,
@@ -23,6 +22,9 @@ from constants import (
     WHITE,
     PADDING_LEFT,
     PADDING_TOP,
+    LIGHT_PURPLE,
+    COLORED_WORDS,
+    RED,
 )
 from entities import Actor
 
@@ -54,11 +56,35 @@ class Engine:
 
         self.game_state = "playing"  # "playing", "dead", "victory"
 
-    def add_message(self, message):
-        """Add a message to the log with automatic wrapping"""
+    def render_colored_text(self, surface, text, position, default_color=WHITE):
+        """Render text with colored keywords"""
+        x, y = position
+        words = text.split()
+
+        for word in words:
+            # Check if word needs special coloring
+            color = COLORED_WORDS.get(word, default_color)
+
+            if not color:
+                # Handle punctuation
+                clean_word = word.strip(".,!?;:")
+                color = COLORED_WORDS.get(clean_word, default_color)
+
+            # Render the word
+            word_surface = self.font_ui.render(word, True, color)
+            word_width = word_surface.get_width()
+
+            # Draw the word
+            surface.blit(word_surface, (x, y))
+
+            # Move to next position
+            x += word_width + self.font_ui.size(" ")[0]  # Add space width
+
+    def add_message(self, message, color=WHITE):
+        """Add a message to the log with wrapping and coloring"""
 
         if message == "":
-            self.messages.append("")
+            self.messages.append(("", color))
             return
 
         # Split long messages into chunks that fit in the message area
@@ -96,7 +122,7 @@ class Engine:
 
         # Add all lines to message log
         for line in lines:
-            self.messages.append(line)
+            self.messages.append((line, color))
 
             # Keep message log manageable
             if len(self.messages) > MSG_HEIGHT * 3:
@@ -130,7 +156,7 @@ class Engine:
             for y in range(game_map.height):
                 # Get the character and color for this tile
                 char = game_map.tiles[x, y]
-                color = WALL_COLOR if char == WALL else FLOOR_COLOR
+                color = LIGHT_GRAY if char == WALL else DARK_GRAY
 
                 # Render the tile character
                 text_surface = self.font_map.render(char, True, color)
@@ -174,7 +200,7 @@ class Engine:
 
         # Third: Draw player (always on top)
         if player.alive:
-            player_text = self.font_map.render(PLAYER, True, PLAYER_COLOR)
+            player_text = self.font_map.render(PLAYER, True, LIGHT_PURPLE)
             self.container.blit(
                 player_text, (player.x * self.char_width, player.y * self.char_height)
             )
@@ -196,20 +222,21 @@ class Engine:
             f"Floor {player.current_floor}",
             "",
             f"XP {player.xp}",
-            f"$$ {player.caps}",
+            f"$$ {player.coins}",
             f"HP {player.hp}/{player.max_hp}",
             "",
             f"Damage {player.damage}",
         ]
 
-        # Draw stats with UI font
+        # Draw stats with colored keywords
         for stat in stats:
-            text = self.font_ui.render(stat, True, WHITE)
-            self.container.blit(text, (ui_x + self.char_width, stats_y))
+            self.render_colored_text(
+                self.container, stat, (ui_x + self.char_width, stats_y)
+            )
             stats_y += self.char_height
 
     def render_messages(self):
-        """Render messages"""
+        """Render messages with colored keywords"""
         msg_x, msg_y = 0, MAP_HEIGHT * self.char_height
 
         # Draw message log background
@@ -221,10 +248,13 @@ class Engine:
         self.container.blit(msg_bg, (msg_x, msg_y))
 
         # Draw messages
-        for i, msg in enumerate(self.messages[-MSG_HEIGHT:]):
-            # Create surface for entire message
-            text = self.font_ui.render(msg, True, WHITE)
-            self.container.blit(text, (0, msg_y + i * self.char_height))
+        for i, (msg, color) in enumerate(self.messages[-MSG_HEIGHT:]):
+            self.render_colored_text(
+                self.container,
+                msg,
+                (msg_x, msg_y + i * self.char_height),
+                color,
+            )
 
     def handle_events(self, player, game_map):
         """Handle user input events"""
@@ -278,7 +308,7 @@ class Engine:
 
                 # Check if player died
                 if not player.alive:
-                    self.add_message("YOU HAVE DIED")
+                    self.add_message("You have died!", RED)
                     self.add_message("Game Over! Press ESC to quit.")
 
                 # Handle stairs
@@ -322,7 +352,7 @@ class Engine:
                     if distance <= 1:  # Check if player is adjacent
                         # Attack player
                         result = entity.attack(player)
-                        messages.append(result)
+                        messages.append((result, RED))
 
                         # Check if player died
                         if not player.alive:
@@ -351,8 +381,8 @@ class Engine:
                                 entity.x, entity.y = new_x, new_y
 
         # Add messages to log
-        for msg in messages:
-            self.add_message(msg)
+        for msg, color in messages:
+            self.add_message(msg, color)
 
     def move_toward(self, entity, target_x, target_y, game_map):
         # Directions: 4-way

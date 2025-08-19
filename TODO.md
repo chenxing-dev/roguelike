@@ -11,7 +11,7 @@
 ## Entity System
 - [ ] Player stats implementation (LVL, HP, ST, DX, XP)
 - [ ] Enemy types (Rats, Scavengers, Corrupted Officials)
-- [ ] Item system (weapons, armor, heals, caps)
+- [ ] Item system (weapons, armor, heals, gold)
   - **Weapons**:
     - Pipe Wrench (`)`)
     - Baseball Bat (`/`)
@@ -24,7 +24,7 @@
     - First-Aid Kit (`!`)
     - Painkillers (`+`)
     - Clean Water (`~`)
-  - **Currency**: Bottle Caps (`$`)
+  - **Currency**: Gold (`$`)
 - [ ] Inventory management
 - [ ] Equipment system
 

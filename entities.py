@@ -1,4 +1,4 @@
-from constants import PLAYER, PLAYER_COLOR
+from constants import PLAYER, LIGHT_GREEN, LIGHT_PURPLE, LIGHT_GOLD
 
 
 class Entity:
@@ -38,9 +38,7 @@ class Actor(Entity):
 
     def get_attack_verb(self):
         """Get appropriate attack verb for this entity type"""
-        if isinstance(self, Scavenger):
-            return "swings at"
-        elif isinstance(self, Looter):
+        if isinstance(self, Looter):
             return "stabs"
         elif isinstance(self, Thug):
             return "slams"
@@ -51,9 +49,11 @@ class Actor(Entity):
 
 class Player(Actor):
     def __init__(self, x, y):
-        super().__init__(x, y, PLAYER, PLAYER_COLOR, "Survivor", hp=10, damage=1)
+        super().__init__(
+            x, y, PLAYER, LIGHT_PURPLE, "Sister Evangeline", hp=10, damage=1
+        )
         self.inventory = []
-        self.caps = 0
+        self.coins = 0
         self.level = 1
         self.xp = 0
         self.current_floor = 1
@@ -108,8 +108,8 @@ class Player(Actor):
         return f"You take {actual_damage} damage!"
 
     def pick_up(self, item, entities):
-        if isinstance(item, Caps):
-            self.caps += item.value
+        if isinstance(item, Currency):
+            self.coins += item.value
             entities.remove(item)
             return f"Picked up {item.get_name()}"
         else:
@@ -119,20 +119,19 @@ class Player(Actor):
 
     def use_stairs(self):
         self.current_floor += 1
-        return f"Level {self.current_floor-1} complete! Descending to level {self.current_floor}..."
+        return (
+            f"Level {self.current_floor-1} complete! Descending to level {self.current_floor}...",
+            LIGHT_GOLD,
+        )
 
     def use_item(self, item):
-        if isinstance(item, FirstAid):
+        if isinstance(item, Heal):
             self.hp = min(self.max_hp, self.hp + item.value)
             return f"Used first-aid kit (+{item.value} HP)"
         elif isinstance(item, Weapon):
             self.equipped_weapon = item
             return f"Equipped {item.name} (+{item.damage_boost} DMG)"
         return None
-
-
-class Scavenger(Actor):
-    pass
 
 
 class Looter(Actor):
@@ -160,22 +159,20 @@ class Item(Entity):
         self.value = value
 
 
-class Caps(Item):
+class Currency(Item):
     def __init__(self, x, y, value=1):
-        super().__init__(x, y, "$", (200, 180, 50), "Bottle Caps", value)
+        super().__init__(x, y, "$", (200, 180, 50), "Gold", value)
 
     def get_name(self):
-        if self.value == 1:
-            return "1 Bottle Cap"
-        return f"{self.value} Bottle Caps"
+        return f"{self.value} gold"
 
 
-class FirstAid(Item):
+class Heal(Item):
     def __init__(self, x, y, symbol, color, name, value):
         super().__init__(x, y, symbol, color, name, value)
 
 
 class Weapon(Item):
     def __init__(self, x, y, name, damage_boost):
-        super().__init__(x, y, ")", (180, 180, 220), name, damage_boost)
+        super().__init__(x, y, ")", LIGHT_GREEN, name, damage_boost)
         self.damage_boost = damage_boost

@@ -2,24 +2,23 @@ import random
 from entities import (
     Actor,
     Item,
-    Scavenger,
     Looter,
     Thug,
     CorruptCop,
-    FirstAid,
-    Caps,
+    Heal,
+    Currency,
     Weapon,
     Stairs,
 )
+from constants import GREEN, LIGHT_GREEN, RED, LIGHT_GOLD
 
 ENTITY_REGISTRY = {
-    "S": (Scavenger, (180, 150, 50), "Scavenger", 8, 1),
-    "L": (Looter, (180, 100, 100), "Looter", 6, 2),
-    "T": (Thug, (150, 50, 50), "Thug", 10, 2),
-    "C": (CorruptCop, (50, 50, 180), "Corrupt Cop", 12, 3),
-    "!": (FirstAid, (255, 50, 50), "First-Aid Kit", 0, 0),
-    "$": (Caps, (200, 180, 50), "Bottle Caps", 0, 0),
-    ")": (Weapon, (180, 180, 220), "Weapon", 0, 0),
+    "L": (Looter, RED, "Looter", 6, 2),
+    "T": (Thug, RED, "Thug", 10, 2),
+    "C": (CorruptCop, RED, "Corrupt Cop", 12, 3),
+    "!": (Heal, GREEN, "Heal", 0, 0),
+    "$": (Currency, LIGHT_GOLD, "Coins", 0, 0),
+    ")": (Weapon, LIGHT_GREEN, "Weapon", 0, 0),
     ">": (Stairs, (180, 230, 30), "Stairs", 0, 0),
 }
 
@@ -35,8 +34,8 @@ def create_entity(symbol, x, y):
         return cls(x, y, symbol, color, name, hp, damage)
     elif issubclass(cls, Item):
         # Special handling for item subtypes
-        if cls == Caps:
-            return Caps(x, y, random.randint(1, 5))
+        if cls == Currency:
+            return Currency(x, y, random.randint(1, 5))
         elif cls == Weapon:
             weapons = [("Pipe Wrench", 1), ("Baseball Bat", 2), ("Fire Axe", 3)]
             name, boost = random.choice(weapons)

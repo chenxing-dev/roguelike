@@ -65,7 +65,7 @@ python main.py
 
 ### Items
 - **Heals**: `!` - Restore HP
-- **Caps**: `$` - Currency and score points
+- **Gold**: `$` - Currency and score points
 - **Weapons**: `/` - Increase damage
 - **Armor**: `[` - Increase AC
 
