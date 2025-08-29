@@ -1,4 +1,4 @@
-from constants import PLAYER, LIGHT_GREEN, LIGHT_PURPLE, LIGHT_GOLD
+from constants import PLAYER, COLOR
 
 
 class Entity:
@@ -50,7 +50,7 @@ class Actor(Entity):
 class Player(Actor):
     def __init__(self, x, y):
         super().__init__(
-            x, y, PLAYER, LIGHT_PURPLE, "Sister Evangeline", hp=10, damage=1
+            x, y, PLAYER, COLOR.PURPLE, "Sister Evangeline", hp=10, damage=1
         )
         self.inventory = []
         self.coins = 0
@@ -121,7 +121,7 @@ class Player(Actor):
         self.current_floor += 1
         return (
             f"Level {self.current_floor-1} complete! Descending to level {self.current_floor}...",
-            LIGHT_GOLD,
+            COLOR.BLACK,
         )
 
     def use_item(self, item):
@@ -161,7 +161,7 @@ class Item(Entity):
 
 class Currency(Item):
     def __init__(self, x, y, value=1):
-        super().__init__(x, y, "$", (200, 180, 50), "Gold", value)
+        super().__init__(x, y, "$", COLOR.AMBER, "Gold", value)
 
     def get_name(self):
         return f"{self.value} gold"
@@ -174,5 +174,5 @@ class Heal(Item):
 
 class Weapon(Item):
     def __init__(self, x, y, name, damage_boost):
-        super().__init__(x, y, ")", LIGHT_GREEN, name, damage_boost)
+        super().__init__(x, y, ")", COLOR.LIME, name, damage_boost)
         self.damage_boost = damage_boost

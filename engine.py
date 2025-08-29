@@ -7,8 +7,7 @@ from constants import (
     FONT_SIZE,
     WALL,
     FLOOR,
-    LIGHT_GRAY,
-    DARK_GRAY,
+    COLOR,
     PLAYER,
     GRID_WIDTH,
     GRID_HEIGHT,
@@ -18,13 +17,9 @@ from constants import (
     UI_HEIGHT,
     MSG_WIDTH,
     MSG_HEIGHT,
-    BLACK,
-    WHITE,
-    PADDING_LEFT,
-    PADDING_TOP,
-    LIGHT_PURPLE,
+    INNER_PADDING,
+    OUTER_PADDING,
     COLORED_WORDS,
-    RED,
 )
 from entities import Actor
 
@@ -50,13 +45,19 @@ class Engine:
         self.container = pygame.Surface(
             (container_width, container_height), pygame.SRCALPHA
         )
+        self.padding_container = pygame.Surface(
+            (container_width + INNER_PADDING * 2, container_height + INNER_PADDING * 2),
+            pygame.SRCALPHA,
+        )
 
         # Initialize empty game messages
         self.messages = []
 
         self.game_state = "playing"  # "playing", "dead", "victory"
 
-    def render_colored_text(self, surface, text, position, default_color=WHITE):
+    def render_colored_text(
+        self, surface, text, position, default_color=COLOR.DARK_AMBER
+    ):
         """Render text with colored keywords"""
         x, y = position
         words = text.split()
@@ -80,7 +81,7 @@ class Engine:
             # Move to next position
             x += word_width + self.font_ui.size(" ")[0]  # Add space width
 
-    def add_message(self, message, color=WHITE):
+    def add_message(self, message, color=COLOR.DARK_AMBER):
         """Add a message to the log with wrapping and coloring"""
 
         if message == "":
@@ -132,7 +133,7 @@ class Engine:
         """Render the game"""
 
         # Clear container
-        self.container.fill(BLACK)
+        self.container.fill(COLOR.LIGHT_AMBER)
 
         self.render_map(game_map, player)
 
@@ -143,8 +144,10 @@ class Engine:
         self.render_messages()
 
         # Blit container to screen with padding
-        self.screen.fill(BLACK)
-        self.screen.blit(self.container, (PADDING_LEFT, PADDING_TOP))
+        self.padding_container.fill(COLOR.LIGHT_AMBER)
+        self.padding_container.blit(self.container, (INNER_PADDING, INNER_PADDING))
+        self.screen.fill(COLOR.DARK_AMBER)
+        self.screen.blit(self.padding_container, (OUTER_PADDING, OUTER_PADDING))
 
         pygame.display.flip()
 
@@ -156,7 +159,7 @@ class Engine:
             for y in range(game_map.height):
                 # Get the character and color for this tile
                 char = game_map.tiles[x, y]
-                color = LIGHT_GRAY if char == WALL else DARK_GRAY
+                color = COLOR.LIGHT_GRAY if char == WALL else COLOR.DARK_GRAY
 
                 # Render the tile character
                 text_surface = self.font_map.render(char, True, color)
@@ -200,7 +203,7 @@ class Engine:
 
         # Third: Draw player (always on top)
         if player.alive:
-            player_text = self.font_map.render(PLAYER, True, LIGHT_PURPLE)
+            player_text = self.font_map.render(PLAYER, True, COLOR.PURPLE)
             self.container.blit(
                 player_text, (player.x * self.char_width, player.y * self.char_height)
             )
@@ -212,7 +215,6 @@ class Engine:
         ui_bg = pygame.Surface(
             (UI_WIDTH * self.char_width, UI_HEIGHT * self.char_height), pygame.SRCALPHA
         )
-        ui_bg.fill(BLACK)
         self.container.blit(ui_bg, (ui_x, ui_y))
 
         # Player stats
@@ -244,7 +246,6 @@ class Engine:
             (MSG_WIDTH * self.char_width, MSG_HEIGHT * self.char_height),
             pygame.SRCALPHA,
         )
-        msg_bg.fill(BLACK)
         self.container.blit(msg_bg, (msg_x, msg_y))
 
         # Draw messages
@@ -308,7 +309,7 @@ class Engine:
 
                 # Check if player died
                 if not player.alive:
-                    self.add_message("You have died!", RED)
+                    self.add_message("You have died!", COLOR.RED)
                     self.add_message("Game Over! Press ESC to quit.")
 
                 # Handle stairs
@@ -352,7 +353,7 @@ class Engine:
                     if distance <= 1:  # Check if player is adjacent
                         # Attack player
                         result = entity.attack(player)
-                        messages.append((result, RED))
+                        messages.append((result, COLOR.RED))
 
                         # Check if player died
                         if not player.alive:

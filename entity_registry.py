@@ -10,15 +10,15 @@ from entities import (
     Weapon,
     Stairs,
 )
-from constants import GREEN, LIGHT_GREEN, RED, LIGHT_GOLD
+from constants import COLOR
 
 ENTITY_REGISTRY = {
-    "L": (Looter, RED, "Looter", 6, 2),
-    "T": (Thug, RED, "Thug", 10, 2),
-    "C": (CorruptCop, RED, "Corrupt Cop", 12, 3),
-    "!": (Heal, GREEN, "Heal", 0, 0),
-    "$": (Currency, LIGHT_GOLD, "Coins", 0, 0),
-    ")": (Weapon, LIGHT_GREEN, "Weapon", 0, 0),
+    "L": (Looter, COLOR.RED, "Looter", 6, 2),
+    "T": (Thug, COLOR.RED, "Thug", 10, 2),
+    "C": (CorruptCop, COLOR.RED, "Corrupt Cop", 12, 3),
+    "!": (Heal, COLOR.GREEN, "Heal", 0, 0),
+    "$": (Currency, COLOR.AMBER, "Coins", 0, 0),
+    ")": (Weapon, COLOR.LIME, "Weapon", 0, 0),
     ">": (Stairs, (180, 230, 30), "Stairs", 0, 0),
 }
 
