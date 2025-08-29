@@ -17,8 +17,8 @@ ENTITY_REGISTRY = {
     "T": (Thug, COLOR.RED, "Thug", 10, 2),
     "C": (CorruptCop, COLOR.RED, "Corrupt Cop", 12, 3),
     "!": (Heal, COLOR.GREEN, "Heal", 0, 0),
-    "$": (Currency, COLOR.AMBER, "Coins", 0, 0),
-    ")": (Weapon, COLOR.LIME, "Weapon", 0, 0),
+    "$": (Currency, COLOR.GOLD, "Coins", 0, 0),
+    ")": (Weapon, COLOR.BROWN, "Weapon", 0, 0),
     ">": (Stairs, (180, 230, 30), "Stairs", 0, 0),
 }
 

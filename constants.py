@@ -31,18 +31,10 @@ PLAYER = "S"
 
 # Special Keywords with Colors
 COLORED_WORDS = {
-    "Forgotten": COLOR.AMBER,
-    "Temple:": COLOR.AMBER,
-    "Gothique": COLOR.AMBER,
-    "£halice": COLOR.YELLOW,
-    "Sister": COLOR.PURPLE,
+    "Forgotten": COLOR.RED,
+    "Temple:": COLOR.RED,
+    "Gothique": COLOR.RED,
+    "Sister": COLOR.BLUE,
     "HP": COLOR.GREEN,
-    "$$": COLOR.AMBER,
-    "Looter": (180, 100, 100),
-    "Thug": (150, 50, 50),
-    "Corrupt Cop": (50, 50, 180),
-    "Heal": COLOR.GREEN,
-    "Pipe Wrench": (180, 180, 220),
-    "Baseball Bat": (200, 150, 100),
-    "Fire Axe": (200, 50, 50),
+    "$$": COLOR.GOLD,
 }

@@ -56,7 +56,7 @@ class Engine:
         self.game_state = "playing"  # "playing", "dead", "victory"
 
     def render_colored_text(
-        self, surface, text, position, default_color=COLOR.DARK_AMBER
+        self, surface, text, position, default_color=COLOR.BROWN
     ):
         """Render text with colored keywords"""
         x, y = position
@@ -70,7 +70,6 @@ class Engine:
                 # Handle punctuation
                 clean_word = word.strip(".,!?;:")
                 color = COLORED_WORDS.get(clean_word, default_color)
-
             # Render the word
             word_surface = self.font_ui.render(word, True, color)
             word_width = word_surface.get_width()
@@ -81,7 +80,7 @@ class Engine:
             # Move to next position
             x += word_width + self.font_ui.size(" ")[0]  # Add space width
 
-    def add_message(self, message, color=COLOR.DARK_AMBER):
+    def add_message(self, message, color=COLOR.BROWN):
         """Add a message to the log with wrapping and coloring"""
 
         if message == "":
@@ -133,7 +132,7 @@ class Engine:
         """Render the game"""
 
         # Clear container
-        self.container.fill(COLOR.LIGHT_AMBER)
+        self.container.fill(COLOR.PARCHMENT)
 
         self.render_map(game_map, player)
 
@@ -144,9 +143,9 @@ class Engine:
         self.render_messages()
 
         # Blit container to screen with padding
-        self.padding_container.fill(COLOR.LIGHT_AMBER)
+        self.padding_container.fill(COLOR.PARCHMENT)
         self.padding_container.blit(self.container, (INNER_PADDING, INNER_PADDING))
-        self.screen.fill(COLOR.DARK_AMBER)
+        self.screen.fill(COLOR.BROWN)
         self.screen.blit(self.padding_container, (OUTER_PADDING, OUTER_PADDING))
 
         pygame.display.flip()
@@ -159,7 +158,7 @@ class Engine:
             for y in range(game_map.height):
                 # Get the character and color for this tile
                 char = game_map.tiles[x, y]
-                color = COLOR.LIGHT_GRAY if char == WALL else COLOR.DARK_GRAY
+                color = COLOR.BROWN if char == WALL else COLOR.BROWN
 
                 # Render the tile character
                 text_surface = self.font_map.render(char, True, color)
@@ -203,7 +202,7 @@ class Engine:
 
         # Third: Draw player (always on top)
         if player.alive:
-            player_text = self.font_map.render(PLAYER, True, COLOR.PURPLE)
+            player_text = self.font_map.render(PLAYER, True, COLOR.GOLD)
             self.container.blit(
                 player_text, (player.x * self.char_width, player.y * self.char_height)
             )
