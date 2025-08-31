@@ -32,8 +32,8 @@ class Engine:
         self.clock = pygame.time.Clock()
 
         # Create fonts
-        self.font_ui = pygame.font.Font("fonts/FT88-Gothique.ttf", FONT_SIZE)
-        self.font_map = pygame.font.Font("fonts/FT88-Gothique.ttf", FONT_SIZE)
+        self.font_ui = pygame.font.Font("assets/fonts/FT88-Gothique.ttf", FONT_SIZE)
+        self.font_map = pygame.font.Font("assets/fonts/FT88-Gothique.ttf", FONT_SIZE)
 
         # Calculate the size of a character
         width, height = self.font_map.size(WALL + FLOOR)

@@ -1,119 +1,46 @@
-# Urban Decay Roguelike - Development Roadmap
+# Hildegard's Mess - Development Progress
 
-## Core Features
-- [ ] Procedural dungeon generation for 6 levels
-- [x] Stairs implementation and level progression
-- [ ] Combat system with stat calculations (HP/AC/DM)
-- [ ] Enemy AI and behaviors
-- [ ] XP system and level progression
-- [ ] Win/lose conditions
+## Phase 1: Engine & Lab Generation
+- [x] Set up Pygame window with 720x720 resolution
+- [x] Implement character grid system (32x20)
+- [x] Integrate FT88 Gothique font rendering
+- [x] Create basic player entity with movement controls
+- [ ] Develop fixed-seed procedural lab generation algorithm
+- [ ] Implement themed zones (Greenhouse, Library, etc.)
+- [x] Create basic tile types (walls, floors, exits)
+- [ ] Set up camera system following player
 
-## Entity System
-- [ ] Player stats implementation (LVL, HP, ST, DX, XP)
-- [ ] Enemy types (Rats, Scavengers, Corrupted Officials)
-- [ ] Item system (weapons, armor, heals, gold)
-  - **Weapons**:
-    - Pipe Wrench (`)`)
-    - Baseball Bat (`/`)
-    - Fire Axe (`†`)
-  - **Armor**:
-    - Leather Jacket (`[`)
-    - Police Vest (`]`)
-    - Hard Hat (`^`)
-  - **Consumables**:
-    - First-Aid Kit (`!`)
-    - Painkillers (`+`)
-    - Clean Water (`~`)
-  - **Currency**: Gold (`$`)
-- [ ] Inventory management
-- [ ] Equipment system
+## Phase 2: Brewing & Pacification System
+- [ ] Design ingredient system with temporary resources
+- [ ] Implement formula collection and permanent unlocks
+- [ ] Create alchemy station interaction system
+- [ ] Develop brewing mechanics with ingredient combinations
+- [ ] Design magical creatures with unique behaviors
+- [ ] Implement pacification system (non-combat interactions)
+- [ ] Create diverse creature types with different interaction requirements
+- [ ] Implement creature state system (calm/agitated/hostile)
+- [ ] Add special ingredients (Moonlit Moss, Sunstone Shard)
+- [ ] Develop Talisman crafting system
 
-## UI & UX
-- [ ] Complete player stats panel
-- [ ] Implement health bars for enemies
-- [ ] Improve message log with message types (combat, system, etc.)
+## Phase 3: UI & Progression Systems
+- [x] Create side panel layout
+- [x] Implement player stat display (HP, MP, ST, DX, IN)
+- [ ] Add inventory management system
+- [ ] Develop formula list interface
+- [x] Create message log system
+- [ ] Implement fog of war system
+- [ ] Build Workshop area (safe zone)
+- [ ] Add stat upgrading through potion brewing
+- [ ] Implement win/lose conditions
+- [ ] Create progress persistence between runs
+- [ ] Design Talisman counter display
 
-## Procedural Generation
-- [ ] Implement cellular automata for organic maps
-- [ ] Add BSP trees for room placement
-- [ ] Create level-specific tilesets for each level
-- [ ] Implement item/enemy placement algorithms
-
-## Polish & Optimization
-- [ ] Balance enemy stats and item values
-- [ ] Add sound effects and background music
-- [ ] Implement screen transitions
-- [ ] Create victory/defeat screens
-
-## Technical Debt
-- [ ] Implement proper entity-component-system architecture
-- [ ] Create automated tests for core mechanics
-- [ ] Improve error handling and logging
-
-## Content Creation
-- [ ] Design 6 unique level themes:
-  1. Street Level (Crumbling houses and overgrown streets)
-  2. Abandoned Downtown (Collapsed storefronts and office buildings)
-  3. Subway System (Collapsed tunnels)
-  4. Sewer Network (Flooded passages)
-  5. Industrial District (Derelict factories and warehouses)
-  6. Central Bunker (Final challenge, Mayor's emergency shelter)
-- [ ] Create enemy variants for each level
-  - Level 1: Rodents, Scavengers
-  - Level 2: Scavengers, ???
-  - Level 3: Rodents, ???
-  - Level 4: ???, Corrupt Officials
-  - Level 5: Wild Animals, Corrupt Officials
-  - Level 6: Elite Guards, Mayor (final challenge)
-- [ ] Design thematic items for each level:
-  - Suburbs: Baseball bat, garden tools
-  - Downtown: Cash register money, jewelry
-  - Sewers: Makeshift raft, water filter
-  - Industrial: Hard hat, steel-toe boots
-  - Storage: Canned food, bottled water
-  - Bunker: Military gear, encrypted files
-- [ ] Write lore snippets for world-building
-  - [ ] Environmental storytelling through debris:
-    - Foreclosure notices
-    - Protest signs
-    - Abandoned possessions
-  - [ ] Audio logs from former residents
-  - [ ] Newspaper fragments about economic collapse
-  - [ ] Mayor's final orders in bunker terminal
-
-## World-Building Details
-- Economic collapse caused by:
-  - Factory closures
-  - Banking crisis
-- Society breakdown:
-  - Looting and scavenging
-  - Formation of gangs
-  - Last government remnants in bunker
-- Environmental decay:
-  - Nature reclaiming urban areas
-  - Infrastructure collapse
-  - Contaminated water sources
-
-## Release Preparation
-- [ ] Create game icon and splash screen
-- [ ] Implement settings menu (volume, controls)
-- [ ] Build executable with PyInstaller
-- [ ] Create installation package
-
----
-
-## Current Progress (Phase 1)
-- [x] Pygame window setup
-- [x] Character-based rendering system
-- [x] Player movement with collision detection
-- [x] Basic map generation from text templates
-- [x] UI layout with message log and stats panel
-- [x] Fonts for map and UI
-- [x] Message wrapping and log management
-
-## Phase 2 Goals
-- [ ] Implement procedural level generation
-- [x] Create entity system with base classes
-- [x] Add first enemy type (Scavenger)
-- [x] Implement basic combat mechanics
-- [x] Create stairs for level progression
+## Phase 4: Polish & Content
+- [ ] Balance creature behaviors and difficulty progression
+- [ ] Create diverse brewing formulas and effects
+- [ ] Implement sound effects system
+- [ ] Add color coding for creatures and items
+- [ ] Develop narrative elements and environmental storytelling
+- [ ] Create in-game instructions and tutorial elements
+- [ ] Playtest for bugs and gameplay flow
+- [ ] Prepare final packaging and distribution builds

@@ -1,136 +1,108 @@
-# Abandoned Town Roguelike: Urban Decay
+# Hildegard's Mess - 炼金学徒日常
 
-![Game Screenshot](screenshot.png)
+![Game Screenshot](screenshots/gameplay.png) <!-- 稍后添加 -->
 
-A minimalistic text-based roguelike game set in a procedurally generated abandoned town. Descend through 6 levels of decaying urban infrastructure, battling enemies and collecting gear to survive the depths of the forgotten town.
+A text-based roguelike game with gothic pixel typography, where you play as Lina, an apprentice tasked with cleaning up your mentor's magically disordered laboratory. Explore the chaotic lab, recover lost formulas, pacify unstable magical creations, and restore order through alchemy and clever problem-solving. Built with PyGame.
 
 ## Features
 
-- Procedurally generated dungeon levels
-- 6 distinct dungeon levels to explore
-- Character progression system with stats and leveling
-- Diverse enemy types with unique behaviors
-- Equipment system with weapons and armor
-- Fog of war and exploration mechanics
-- Permadeath system
+*   **Pure Text Rendering:** World built entirely from characters and symbols
+*   **Gothic Pixel Aesthetic:** FT88 Gothique font creates an illuminated manuscript feel
+*   **Roguelike Elements:** Each playthrough features a procedurally generated map layout with different challenges
+*   **Alchemy System:** Collect ingredients and discover formulas to create useful potions and items
+*   **Unique Pacification Mechanics**: Use brewed concoctions to calm magical creatures instead of combat
+
+## Controls
+
+*   **Movement:** `WASD` or `Arrow Keys`
+*   **Interact/Confirm:** `E` or `Spacebar`
+*   **Brew at Station**: B (when near an alchemy station)
+*   **Inventory**: I
+*   **Quit**: Q or ESC
 
 ## Installation
 
-### Prerequisites
-- Python 3.8+
-- Pygame
-- Numpy
-- Noise
+### Requirements
 
-### Setup
-1. Clone the repository:
+*   Python 3.8+
+*   PyGame 2.0+ (`pip install pygame`)
+*   NumPy
+
+### Using Virtual Environment (Recommended)
+
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/chenxing-dev/roguelike.git
+    cd roguelike
+    ```
+2.  Create and activate virtual environment:
+    ```bash
+    # Create virtual environment
+    python -m venv venv
+
+    # Activate (Linux/macOS)
+    source venv/bin/activate
+
+    # Activate (Windows)
+    venv/Scripts/activate
+    ```
+
+3.  Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  Run the game:
+    ```bash
+    python main.py
+    ```
+
+### Building Executable
+
+To create a standalone executable:
 ```bash
-git clone https://github.com/chenxing-dev/abandoned-town-roguelike.git
-cd abandoned-town-roguelike
+pip install pyinstaller
+pyinstaller --onefile --windowed --add-data "assets:assets" src/main.py
 ```
-
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-3. Run the game:
-```bash
-python main.py
-```
-
-## Controls
-- **Movement**: Arrow Keys or WASD
-- **Interact**: Walk into items/stairs
-- **Quit**: ESC
-
-## Game Mechanics
-
-### Character Stats
-- **LVL**: Player level (increases through XP)
-- **HP**: Health points (0 = death)
-- **ST**: Strength (affects damage)
-- **DX**: Dexterity (affects dodge chance)
-- **XP**: Experience points
-- **DM**: Damage dealt
-- **EV**: Evasion chance
-- **AC**: Armor class (damage reduction)
-
-### Entities
-- **Player**: `@` - You!
-- **Stairs**: `>` - Descend to next level
-- **Rats**: `R` - Weak but numerous
-- **Scavenger**: `S` - Medium strength
-- **Corrupted Officials**: `G` - Tough enemies with some armor, found in later levels
-
-### Items
-- **Heals**: `!` - Restore HP
-- **Gold**: `$` - Currency and score points
-- **Weapons**: `/` - Increase damage
-- **Armor**: `[` - Increase AC
 
 ## Project Structure
 
-```plaintext
-abandoned-town-roguelike/
-├── main.py             # Game entry point
-├── engine.py           # Game rendering
-├── entities.py         # Player and entity classes
-├── dungeon_gen.py      # Map generation
-├── constants.py        # Game constants
-├── requirements.txt    # Dependencies
-├── README.md           # This file
-└── fonts               # Game fonts
+```
+.
+├── assets/
+│   └── fonts/
+│       └── FT88_Gothique.ttf    # Game font
+├── src/
+│   ├── main.py                  # Game entry point
+│   ├── game.py                  # Main game loop
+│   ├── player.py                # Player class
+│   ├── world.py                 # Map generation
+│   ├── entities/
+│   │   ├── entity.py            # Entity base class
+│   │   ├── enemy.py             # Enemy entities
+│   │   └── item.py              # Item system
+│   ├── systems/
+│   │   ├── crafting.py          # Crafting system
+│   │   └── inventory.py         # Inventory management
+│   └── ui/
+│       ├── hud.py               # Heads-up display
+│       └── text_renderer.py     # Text renderer
+├── requirements.txt             # Python dependencies
+├── LICENSE                      # Code license
+├── README.md                    # Project documentation
+└── TODO.md                      # Development tasks
 ```
 
-## Development
+## 贡献
 
-### Modules Overview
+本项目为个人开发项目，暂不接受外部贡献。
 
-#### `main.py`
-The entry point of the application. Initializes and runs the game.
+## 许可证
 
-#### `engine.py`
-Contains the `Game` class which handles:
-- Input processing
-- Rendering and UI
-- Game state management
+Code is licensed under [MIT License](LICENSE).
 
-#### `entities.py`
-Defines all game entities:
-- `Entity`: Base class for all game objects
-- `Player`: Player character with stats and inventory
-- `Monster`: Enemy entities with AI behavior
-- `Item`: Collectible objects with various effects
+This game uses the FT88 Gothique font from the [Degheest](https://velvetyne.fr/fonts/degheest/) project, available under the [SIL OPEN FONT LICENSE](License SIL OFL.txt).
 
-#### `dungeon_gen.py`
-Handles procedural level generation:
-- `GameMap` class for managing level state
-- Perlin noise-based map generation
-- Fog of war implementation
-- Entity placement algorithms
+---
 
-#### `constants.py`
-Contains all game constants:
-- Screen dimensions and grid sizes
-- Color definitions
-- Game configuration parameters
-
-## Contributing
-
-Contributions are welcome! Please follow these steps:
-1. Fork the repository
-2. Create a new branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin feature/your-feature`)
-5. Create a new Pull Request
-
-## License
-
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
-
-## Acknowledgments
-
-- Inspired by classic roguelike games
-- Uses Pygame for graphics and input handling
-- [Degheest](https://velvetyne.fr/fonts/degheest/) by Ange Degheest, Camille Depalle, Eugénie Bidaut, Luna Delabre, Mandy Elbé, May Jolivet, Oriane Charvieux, Benjamin Gomez, Justine Herbel. Distributed by velvetyne.fr.
+*《炼金学徒日常》是正在开发中的游戏，所有功能可能会有变动。*
